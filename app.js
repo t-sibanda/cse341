@@ -1,21 +1,16 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+require('dotenv').config();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-  res.send('VaSibanda nemhuri yavo');
-});
+// Middleware to parse JSON
+app.use(express.json());
 
-const contactsRouter = require('./routes/contacts');
-app.use('/contacts', contactsRouter);
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-const mongoose = require('mongoose');
-require('dotenv').config();
-
+// MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -27,16 +22,7 @@ db.once('open', () => {
   console.log('Connected to MongoDB Atlas');
 });
 
-const mongoose = require('mongoose');
-mongoose.connect('your-mongodb-connection-string', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-
+// Swagger Setup
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -50,8 +36,22 @@ const swaggerOptions = {
       { url: 'https://your-render-app-url.onrender.com' },
     ],
   },
-  apis: ['./routes/*.js'], 
+  apis: ['./routes/*.js'], // Path to your API routes
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// Routes
+const contactsRouter = require('./routes/contacts');
+app.use('/contacts', contactsRouter);
+
+// Root route
+app.get('/', (req, res) => {
+  res.send('VaSibanda nemhuri yavo');
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
