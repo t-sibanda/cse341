@@ -1,0 +1,22 @@
+### Create a new contact
+POST http://localhost:3000/contacts
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "favoriteColor": "Blue",
+  "birthday": "1990-01-01"
+}
+
+### Update a contact
+PUT http://localhost:3000/contacts/{{contactId}}
+Content-Type: application/json
+
+{
+  "firstName": "Jane"
+}
+
+### Delete a contact
+DELETE http://localhost:3000/contacts/{{contactId}}
