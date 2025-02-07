@@ -14,7 +14,9 @@ app.use(express.json());
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+})
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Error connecting to MongoDB:', err));
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -33,10 +35,10 @@ const swaggerOptions = {
     },
     servers: [
       { url: 'http://localhost:3000' },
-      { url: 'https://your-render-app-url.onrender.com' },
+      { url: 'https://cse341-contactsapi.onrender.com' },
     ],
   },
-  apis: ['./routes/*.js'], // Path to your API routes
+  apis: ['./routes/*.js'], // Path to my API routes
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -48,7 +50,7 @@ app.use('/contacts', contactsRouter);
 
 // Root route
 app.get('/', (req, res) => {
-  res.send('VaSibanda nemhuri yavo');
+  res.send('VaSibanda varikuzama zvavo');
 });
 
 // Start the server
