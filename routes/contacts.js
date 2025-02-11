@@ -25,7 +25,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
 
 router.post('/', async (req, res) => {
     try {
@@ -64,7 +63,7 @@ router.post('/', async (req, res) => {
       res.status(400).json({ message: error.message });
     }
   });
-
+ 
 
   /**
  * @swagger
@@ -100,6 +99,68 @@ router.post('/', async (req, res) => {
  *                 id:
  *                   type: string
  */
+/**
+ * @swagger
+ * /contacts:
+ *   post:
+ *     summary: Create a new contact
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               favoriteColor:
+ *                 type: string
+ *               birthday:
+ *                 type: string
+ *                 format: date
+ *     responses:
+ *       201:
+ *         description: Contact created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ */
 router.post('/', async (req, res) => {
-    // Your POST route logic
-  });
+  try {
+    // Extract fields from the request body
+    const { firstName, lastName, email, favoriteColor, birthday } = req.body;
+
+    // Validate required fields
+    if (!firstName || !lastName || !email || !favoriteColor || !birthday) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Create a new contact
+    const newContact = new Contact({
+      firstName,
+      lastName,
+      email,
+      favoriteColor,
+      birthday: new Date(birthday), // Convert birthday string to a Date object
+    });
+
+    // Save the new contact to the database
+    await newContact.save();
+
+    // Return the ID of the newly created contact
+    res.status(201).json({ id: newContact._id });
+  } catch (error) {
+    // Handle errors
+    res.status(500).json({ message: error.message });
+  }
+});
+
+module.exports = router;
